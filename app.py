@@ -2,16 +2,13 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# -------------------------------
 # Load model, scaler, and columns
-# -------------------------------
 model = joblib.load("logistic_heart.pkl")
 scaler = joblib.load("scaler.pkl")
 expected_columns = joblib.load("columns.pkl")  # Columns used during training
 
-# -------------------------------
+
 # Streamlit UI
-# -------------------------------
 st.title("Heart Disease Prediction")
 st.markdown("Provide the following details to check your heart disease risk:")
 
@@ -30,9 +27,8 @@ exercise_angina = st.selectbox("Exercise-Induced Angina", ["Y", "N"])
 fasting_bs = st.selectbox("Fasting Blood Sugar > 120 mg/dL", [0, 1])
 st_slope = st.selectbox("ST Slope", ["Up", "Flat", "Down"])
 
-# -------------------------------
+
 # Prediction logic
-# -------------------------------
 if st.button("Predict"):
 
     # Step 1: Initialize dataframe with all expected columns

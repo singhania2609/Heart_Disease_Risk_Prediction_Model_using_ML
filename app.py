@@ -11,7 +11,7 @@ expected_columns = joblib.load("columns.pkl")  # Columns used during training
 st.title("Heart Disease Prediction")
 st.markdown("Provide the following details to check your heart disease risk:")
 
-# Define healthy ranges (example reference values)
+# Define healthy ranges for numeric features
 healthy_ranges = {
     "Age": (18, 45),
     "RestingBP": (90, 120),
@@ -45,13 +45,43 @@ st.caption(risk_indicator(max_hr, "MaxHR"))
 oldpeak = st.slider("Oldpeak (ST Depression)", 0.0, 6.0, 1.0)
 st.caption(risk_indicator(oldpeak, "Oldpeak"))
 
-# Categorical inputs
+# Categorical inputs with risk guidance
 sex = st.selectbox("Sex", ["M", "F"])
+
+chest_pain_risk = {
+    "ATA": "✅ Low Risk (Typical Angina)",
+    "NAP": "⚠️ Moderate Risk (Non-Anginal Pain)",
+    "TA":  "⚠️ Moderate Risk (Atypical Angina)",
+    "ASY": "⚠️ High Risk (Asymptomatic)"
+}
 chest_pain = st.selectbox("Chest Pain Type", ["ATA", "NAP", "TA", "ASY"])
+st.caption(chest_pain_risk[chest_pain])
+
+resting_ecg_risk = {
+    "Normal": "✅ Low Risk",
+    "ST": "⚠️ Moderate Risk (ST-T Abnormality)",
+    "LVH": "⚠️ Moderate Risk (Left Ventricular Hypertrophy)"
+}
 resting_ecg = st.selectbox("Resting ECG", ["Normal", "ST", "LVH"])
+st.caption(resting_ecg_risk[resting_ecg])
+
+exercise_angina_risk = {
+    "N": "✅ No Exercise-Induced Angina",
+    "Y": "⚠️ Yes, Higher Risk"
+}
 exercise_angina = st.selectbox("Exercise-Induced Angina", ["Y", "N"])
+st.caption(exercise_angina_risk[exercise_angina])
+
 fasting_bs = st.selectbox("Fasting Blood Sugar > 120 mg/dL", [0, 1])
+st.caption("⚠️ High if 1, ✅ Normal if 0")
+
+st_slope_risk = {
+    "Up": "✅ Low Risk (Upward slope)",
+    "Flat": "⚠️ Moderate Risk",
+    "Down": "⚠️ High Risk"
+}
 st_slope = st.selectbox("ST Slope", ["Up", "Flat", "Down"])
+st.caption(st_slope_risk[st_slope])
 
 # Prediction logic
 if st.button("Predict"):

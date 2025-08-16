@@ -7,17 +7,43 @@ model = joblib.load("logistic_heart.pkl")
 scaler = joblib.load("scaler.pkl")
 expected_columns = joblib.load("columns.pkl")  # Columns used during training
 
-
 # Streamlit UI
 st.title("Heart Disease Prediction")
 st.markdown("Provide the following details to check your heart disease risk:")
 
+# Define healthy ranges (example reference values)
+healthy_ranges = {
+    "Age": (18, 45),
+    "RestingBP": (90, 120),
+    "Cholesterol": (125, 200),
+    "MaxHR": (100, 170),
+    "Oldpeak": (0, 1.0)
+}
+
+def risk_indicator(value, feature):
+    low, high = healthy_ranges[feature]
+    if value < low:
+        return f"⚠️ Low ({low}-{high} is healthy)"
+    elif value > high:
+        return f"⚠️ High ({low}-{high} is healthy)"
+    else:
+        return f"✅ Normal ({low}-{high})"
+
 # Numeric inputs
 age = st.slider("Age", 18, 100, 40)
+st.caption(risk_indicator(age, "Age"))
+
 resting_bp = st.number_input("Resting Blood Pressure (mm Hg)", 80, 200, 120)
+st.caption(risk_indicator(resting_bp, "RestingBP"))
+
 cholesterol = st.number_input("Cholesterol (mg/dL)", 100, 600, 200)
+st.caption(risk_indicator(cholesterol, "Cholesterol"))
+
 max_hr = st.slider("Max Heart Rate", 60, 220, 150)
-oldpeak = st.slider("Oldpeak (ST Depression)", 0.0, 6.0, 1.0)  # Not scaled
+st.caption(risk_indicator(max_hr, "MaxHR"))
+
+oldpeak = st.slider("Oldpeak (ST Depression)", 0.0, 6.0, 1.0)
+st.caption(risk_indicator(oldpeak, "Oldpeak"))
 
 # Categorical inputs
 sex = st.selectbox("Sex", ["M", "F"])
@@ -26,7 +52,6 @@ resting_ecg = st.selectbox("Resting ECG", ["Normal", "ST", "LVH"])
 exercise_angina = st.selectbox("Exercise-Induced Angina", ["Y", "N"])
 fasting_bs = st.selectbox("Fasting Blood Sugar > 120 mg/dL", [0, 1])
 st_slope = st.selectbox("ST Slope", ["Up", "Flat", "Down"])
-
 
 # Prediction logic
 if st.button("Predict"):
